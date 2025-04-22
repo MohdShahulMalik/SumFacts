@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT as string);
+
 app.use(express.json());
 
 type ArticleUrls = {
