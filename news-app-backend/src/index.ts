@@ -3,33 +3,15 @@ import { ArticleData, extract } from "@extractus/article-extractor";
 import { load } from "cheerio";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
+import type { ArticleUrls, SummarizedArticles, ErrorResponse, Assessment, Claim } from "./types.js";
+import { startDatabase } from "./database.js";
 
 dotenv.config();
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT as string);
 
 app.use(express.json());
-
-type ArticleUrls = {
-    urls: string[];
-};
-
-type SummarizedArticles = {
-    summarizedArticles: string[];
-};
-
-type ErrorResponse = {
-    error: string;
-    
-};
-
-type Claim = {
-    claim: string;
-};
-
-type Assessment = {
-    assement: string;
-};
+startDatabase();
 
 app.post("/summarize", async (req: Request<null, SummarizedArticles | ErrorResponse, ArticleUrls, null>, res: Response) => {
     const { urls } = req.body;
