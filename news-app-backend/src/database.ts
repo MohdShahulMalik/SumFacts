@@ -1,8 +1,12 @@
-import { Surreal } from "surrealdb";
+import { Surreal, RecordId } from "surrealdb";
 import { surrealdbNodeEngines } from "@surrealdb/node";
 import dotenv from "dotenv";
+import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc.js";
 
 dotenv.config();
+dayjs.extend(utc);
+
 const db = new Surreal({
     engines: surrealdbNodeEngines(),
 });
@@ -23,4 +27,8 @@ export async function startDatabase(){
         console.error("Failed to connect to surrealdb: ", error instanceof Error ? error.message : error);
         db.close();
     }
+}
+
+export async function addSummaries(day: Dayjs, summaries: string[]) {
+    
 }

@@ -1,6 +1,11 @@
-export type ArticleUrls = {
-    urls: string[];
+import { Dayjs } from "dayjs";
+
+export type NewsDay = {
+    day: Dayjs;
+    numNews: number;
 };
+
+export type ArticleUrls = string[];
 
 export type SummarizedArticles = {
     summarizedArticles: string[];
@@ -11,10 +16,7 @@ export type ErrorResponse = {
     
 };
 
-export type Claim = {
-    claim: string;
-};
-
-export type Assessment = {
-    assement: string;
-};
+export type NewSummaries = {
+    date: string;
+    summaries: string[];
+}
