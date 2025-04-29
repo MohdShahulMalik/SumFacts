@@ -49,7 +49,7 @@ app.post("/news-summaries", async (req: Request<null, SummarizedArticles | Error
         }
     }else {
         try {
-
+            //TODO: make the api return articles based on the date
             const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=in&max=5&apikey=${process.env.GNEWS_API_KEY}`);
             const jsonResponse = await response.json();
             const articles = jsonResponse.articles;
