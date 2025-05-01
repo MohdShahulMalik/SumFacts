@@ -9,7 +9,7 @@
     "dev": "nodemon",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
-    "test": "jasmine"
+    "test": "tsx node_modules/jasmine/bin/jasmine.js"
   },
   "ts-node": {
     "compilerOptions": {
@@ -20,14 +20,16 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.9.0",
+  "packageManager": "pnpm@10.10.0",
   "devDependencies": {
     "@eslint/js": "^9.24.0",
     "@types/express": "^5.0.1",
+    "@types/jasmine": "^5.1.7",
     "@types/node": "^22.14.1",
     "dayjs-plugin-utc": "^0.1.2",
     "eslint": "^9.24.0",
     "globals": "^16.0.0",
+    "jasmine": "^5.7.0",
     "nodemon": "^3.1.9",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3",
