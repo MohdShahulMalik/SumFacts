@@ -1,7 +1,7 @@
-import { Dayjs } from "dayjs";
+import { RecordId } from "surrealdb";
 
 export type NewsDay = {
-    day: Dayjs;
+    day: string;
     numNews: number;
 };
 
@@ -16,7 +16,11 @@ export type ErrorResponse = {
     
 };
 
-export type NewSummaries = {
-    date: string;
+export type NewsSummaries = {
+    summaries: string[];
+}
+
+export type NewsSummariesRecord = {
+    id: RecordId;
     summaries: string[];
 }

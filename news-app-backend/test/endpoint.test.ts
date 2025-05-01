@@ -10,7 +10,7 @@ describe("API Endpoint Tests", () => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                day: dayjs(),
+                day: dayjs().toISOString(),
                 numNews: 5
             }),
         });
@@ -18,6 +18,7 @@ describe("API Endpoint Tests", () => {
         expect(response.status).toBe(200);
     
         const data =  await response.json();
+        // console.log(data);          //this was for testing purposes only(yeah I know, a test inside a test, how amazing😅)
 
         expect(data).toBeDefined();
         expect(data).toEqual(jasmine.any(Object));

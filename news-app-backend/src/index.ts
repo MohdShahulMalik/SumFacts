@@ -3,14 +3,17 @@ import { ArticleData, extract } from "@extractus/article-extractor";
 import { load } from "cheerio";
 import dotenv from "dotenv";
 import type { NewsDay, ArticleUrls, SummarizedArticles, ErrorResponse} from "./types.js";
-import { startDatabase } from "./database.js";
+import { closeDB, startDB } from "./database.js";
+import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc.js";
 
 dotenv.config();
+dayjs.extend(utc);
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT as string);
 
 app.use(express.json());
-startDatabase();
+startDB();
 
 app.post("/news-summaries", async (req: Request<null, SummarizedArticles | ErrorResponse, NewsDay, null>, res: Response) => {
     const { day, numNews }: NewsDay = req.body;
@@ -18,6 +21,7 @@ app.post("/news-summaries", async (req: Request<null, SummarizedArticles | Error
         res.status(400).json({ error: "Day(as a dayjs object) and numNews fields should exists in the request body" });
         return;
     }
+    const dayjsDay: Dayjs = dayjs(day);
 
     if (numNews !== 10 && numNews !== 5){
         res.status(400).json({ error: "numNews should be 5 or 10" });
@@ -28,8 +32,9 @@ app.post("/news-summaries", async (req: Request<null, SummarizedArticles | Error
 
     if (numNews === 10){
         try {
-
-            const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=in&max=10&apikey=${process.env.GNEWS_API_KEY}`);
+            const utcStartDate = dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
+            const utcEndDate = dayjsDay.endOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
+            const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=in&max=10&from=${utcStartDate}&to=${utcEndDate}&apikey=${process.env.GNEWS_API_KEY}`);
             const jsonResponse = await response.json();
             const articles = jsonResponse.articles;
             for (const article of articles) {
@@ -50,7 +55,9 @@ app.post("/news-summaries", async (req: Request<null, SummarizedArticles | Error
     }else {
         try {
             //TODO: make the api return articles based on the date
-            const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=in&max=5&apikey=${process.env.GNEWS_API_KEY}`);
+            const utcStartDate = dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
+            const utcEndDate = dayjsDay.utc().format("YYYY-MM-DDTHH:mm:ssZ");
+            const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=in&max=5&from=${utcStartDate}&to=${utcEndDate}&apikey=${process.env.GNEWS_API_KEY}`);
             const jsonResponse = await response.json();
             const articles = jsonResponse.articles;
             for (const article of articles) {
@@ -144,6 +151,18 @@ app.post("/news-summaries", async (req: Request<null, SummarizedArticles | Error
     }
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Listening at http://localhost:${PORT}`);
 });
+
+const shutdown = async () => {
+    console.log("Shutting down the server...");
+    server.close(async () => {
+        console.log("The server has been closed");
+        await closeDB();
+        process.exit(0);
+    });
+};
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
