@@ -60,3 +60,12 @@ export async function getSummaries(day: Dayjs) {
 
     return record;
 }
+
+export async function recExists(day: Dayjs): Promise<boolean>{
+    const recId = new RecordId("summaries", day.format("YYYY-MM-DD"));
+    const [res] = await db.query<{result: boolean}[]>("RETURN record::exists($recId)", {
+        recId
+    });
+
+    return res.result;
+}

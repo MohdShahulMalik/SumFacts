@@ -3,7 +3,7 @@ import { ArticleData, extract } from "@extractus/article-extractor";
 import { load } from "cheerio";
 import dotenv from "dotenv";
 import type { NewsDay, ArticleUrls, SummarizedArticles, ErrorResponse} from "./types.js";
-import { closeDB, startDB } from "./database.js";
+import { addSummaries, closeDB, getSummaries, recExists, startDB } from "./database.js";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 
@@ -31,6 +31,12 @@ app.post("/news-summaries", async (req: Request<null, SummarizedArticles | Error
     const urls: ArticleUrls = [];
 
     if (numNews === 10){
+        const summariesExist = await recExists(dayjsDay);
+        if (summariesExist) {
+            const summarizedArticles = await getSummaries(dayjsDay);
+            res.json({ summarizedArticles });
+            return;
+        }
         try {
             const utcStartDate = dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
             const utcEndDate = dayjsDay.endOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
@@ -139,6 +145,9 @@ app.post("/news-summaries", async (req: Request<null, SummarizedArticles | Error
             }
         }
 
+        if (numNews === 10){
+            await addSummaries(dayjsDay, summarizedArticles);
+        }
         res.json({ summarizedArticles });
     }catch(error) {
         if (error instanceof Error){
