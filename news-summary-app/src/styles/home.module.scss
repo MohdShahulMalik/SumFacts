@@ -1,0 +1,108 @@
+@use "index" as i;
+
+.home-body{
+    @include i.flex-center;
+    @include i.position-center;
+    flex-direction: column;
+    width: 55%;
+    // z-index: 500;
+}
+
+.tag{
+    // @include i.flex-center;
+    text-align: center;
+}
+
+.extended-despricption {
+    text-align: center;
+    font-weight: normal;
+}
+
+.app-description{
+    padding: 1.5rem 0;
+}
+
+.login{
+    align-self: center;
+    width: 30%;
+    background-color: i.$color-primary;
+    color: i.$color-secondary;
+    padding: 0.5rem 0.75rem;
+    // font-weight: bolder;
+    height: 2.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 0.25rem;
+    margin-bottom: 1.25rem;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.login:hover{
+    background-color: i.$color-hover;
+}
+
+.login:active{
+    background-color: i.$color-active;
+}
+
+.app-quick-descriptions{
+    display: flex;
+    column-gap: 2rem;
+    width: 100%;
+    // height: 100%;
+    .quick-description{
+        @include i.flex-center;
+        flex-direction: column;
+        flex: 1;
+        // height: 100%;
+        .quick-description-img{
+            width: 5.5rem;
+            height: 5.5rem;
+            object-fit: cover;
+            align-self: center;
+            border-radius: 50%;
+        }
+    }
+}
+
+h4,
+h3{
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+h4{
+    font-weight: normal;
+}
+
+@media (width <= 1020px){
+    .home-body{
+        width: 70%;
+    }
+}
+
+@media (width <= 870px){
+    .home-body{
+        width: 90%;
+    }
+}
+
+@media (width <= 700px){
+    .home-body{
+        position: static;
+        transform: translate(0, 0);
+        align-content: center;
+        width: 100%;
+    }
+
+    .app-quick-descriptions{
+        flex-direction: column;
+        row-gap: 2rem;
+    }
+
+    .login{
+        width: 50%;
+    }
+}

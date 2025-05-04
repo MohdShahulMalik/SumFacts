@@ -1,1 +1,6 @@
-$main-color: #5EC471;
+@use "sass:color" as c;
+
+$color-primary: #2aaa42;
+$color-secondary: white;
+$color-hover: c.scale($color-primary, $lightness: 8%);
+$color-active: c.scale($color-primary, $lightness: -8%);
