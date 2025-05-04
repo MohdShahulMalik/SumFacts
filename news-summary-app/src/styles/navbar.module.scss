@@ -1,0 +1,17 @@
+.header-nav{
+    // padding-right: 2.5rem;
+    .header-nav-ul{
+        display: flex;
+        align-items: center;
+        list-style: none;
+        column-gap: 1.2rem;
+        margin: 0;
+        padding: 0;
+        .header-nav-li {
+            .header-nav-a{
+                text-decoration: none;
+                color: black;
+            }
+        }
+    }
+}

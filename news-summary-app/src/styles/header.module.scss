@@ -1,0 +1,38 @@
+.logo,
+header{
+    display: flex;   
+}
+
+header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.5);
+}
+
+.logo{
+    justify-content: start;
+    height: 2rem;
+    align-items: center;
+    .logo-icon-link{
+        .logo-icon{
+            display: flex;
+            align-items: center;
+            width: 3rem;
+            height: 3rem;
+        }
+    }
+
+    .logo-name-link{
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: black;
+    }
+}
