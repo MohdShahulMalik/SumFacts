@@ -1,1 +1,2 @@
-**/.env
+./news-app-backend/.env
+./news-summary-app/.env
