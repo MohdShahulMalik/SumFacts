@@ -2,7 +2,7 @@ import express, { Express, Request, Response } from "express";
 import { ArticleData, extract } from "@extractus/article-extractor";
 import { load } from "cheerio";
 import dotenv from "dotenv";
-import type { NewsDay, ArticleUrls, SummarizedArticles, ErrorResponse} from "./types.js";
+import type { NewsDay, ArticleUrls, SummarizedArticles, ErrorResponse, NewsCategory, NewsCategoryParam} from "./types.js";
 import { addSummaries, closeDB, getSummaries, recExists, startDB } from "./database.js";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc.js";
@@ -15,9 +15,10 @@ const PORT: number = parseInt(process.env.PORT as string);
 app.use(express.json());
 startDB();
 
-app.post("/news-summaries", async (req: Request<null, SummarizedArticles | ErrorResponse, NewsDay, null>, res: Response) => {
+app.post("/news-summaries/:category", async (req: Request<NewsCategoryParam, SummarizedArticles | ErrorResponse, NewsDay, null>, res: Response) => {
     const { day, numNews }: NewsDay = req.body;
-    if (!day || !numNews) {
+    const category: NewsCategory = req.params.category;
+    if (!day || !numNews || !category) {
         res.status(400).json({ error: "Day(as a dayjs object) and numNews fields should exists in the request body" });
         return;
     }
@@ -33,14 +34,14 @@ app.post("/news-summaries", async (req: Request<null, SummarizedArticles | Error
     if (numNews === 10){
         const summariesExist = await recExists(dayjsDay);
         if (summariesExist) {
-            const summarizedArticles = await getSummaries(dayjsDay);
+            const summarizedArticles = await getSummaries(dayjsDay, category);
             res.json({ summarizedArticles });
             return;
         }
         try {
             const utcStartDate = dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
             const utcEndDate = dayjsDay.endOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
-            const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=in&max=10&from=${utcStartDate}&to=${utcEndDate}&apikey=${process.env.GNEWS_API_KEY}`);
+            const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&max=10&from=${utcStartDate}&to=${utcEndDate}&apikey=${process.env.GNEWS_API_KEY}`);
             const jsonResponse = await response.json();
             const articles = jsonResponse.articles;
             for (const article of articles) {
@@ -63,7 +64,7 @@ app.post("/news-summaries", async (req: Request<null, SummarizedArticles | Error
             //TODO: make the api return articles based on the date
             const utcStartDate = dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
             const utcEndDate = dayjsDay.utc().format("YYYY-MM-DDTHH:mm:ssZ");
-            const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=in&max=5&from=${utcStartDate}&to=${utcEndDate}&apikey=${process.env.GNEWS_API_KEY}`);
+            const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&max=5&from=${utcStartDate}&to=${utcEndDate}&apikey=${process.env.GNEWS_API_KEY}`);
             const jsonResponse = await response.json();
             const articles = jsonResponse.articles;
             for (const article of articles) {
@@ -146,7 +147,7 @@ app.post("/news-summaries", async (req: Request<null, SummarizedArticles | Error
         }
 
         if (numNews === 10){
-            await addSummaries(dayjsDay, summarizedArticles);
+            await addSummaries(dayjsDay, summarizedArticles, category);
         }
         res.json({ summarizedArticles });
     }catch(error) {

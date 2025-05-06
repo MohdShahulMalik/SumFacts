@@ -1,5 +1,11 @@
 import { RecordId } from "surrealdb";
 
+export type NewsCategoryParam = {
+    category: "general" | "world" | "nation" | "business" | "technology" | "sports" | "science" | "health";
+}
+
+export type NewsCategory = "general" | "world" | "nation" | "business" | "technology" | "sports" | "science" | "health";
+
 export type NewsDay = {
     day: string;
     numNews: number;

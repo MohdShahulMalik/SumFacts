@@ -3,7 +3,7 @@ import { surrealdbNodeEngines } from "@surrealdb/node";
 import dotenv from "dotenv";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc.js";
-import { NewsSummaries } from "./types.js";
+import { NewsCategory, NewsSummaries } from "./types.js";
 
 dotenv.config();
 dayjs.extend(utc);
@@ -45,8 +45,8 @@ export async function closeDB(){
     }
 }
 
-export async function addSummaries(day: Dayjs, summaries: string[]) {
-    const recordId = new RecordId("summaries", day.format("YYYY-MM-DD"));
+export async function addSummaries(day: Dayjs, summaries: string[], category: NewsCategory) {
+    const recordId = new RecordId(`summaries-${category}`, day.format("YYYY-MM-DD"));
     const record = await db.create<NewsSummaries>(recordId, {
         summaries
     });
@@ -54,8 +54,8 @@ export async function addSummaries(day: Dayjs, summaries: string[]) {
     return record; // I have put this here for testing purposes, but it will no be in the final project
 }
 
-export async function getSummaries(day: Dayjs) {
-    const recordId = new RecordId("summaries", day.format("YYYY-MM-DD"));
+export async function getSummaries(day: Dayjs, category: NewsCategory) {
+    const recordId = new RecordId(`summaries-${category}`, day.format("YYYY-MM-DD"));
     const record = await db.select<NewsSummaries>(recordId);
 
     return record;
