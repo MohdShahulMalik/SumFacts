@@ -7,18 +7,27 @@ import { addSummaries, closeDB, getSummaries, recExists, startDB } from "./datab
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 
+import timezone from "dayjs/plugin/timezone";;
+import cors from "cors";
+
 dotenv.config();
 dayjs.extend(utc);
+dayjs.extend(timezone);
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT as string);
 
 app.use(express.json());
+app.use(cors({
+    origin: `${process.env.FRONTEND_URL}`,
+    methods: ["POST"],
+    allowedHeaders: ["Content-Type"],
+}));
+
 startDB();
 
 app.post("/news-summaries/:category", async (req: Request<NewsCategoryParam, SummarizedArticles | ErrorResponse, NewsDay, null>, res: Response) => {
     const { day, numNews }: NewsDay = req.body;
     const category: string= req.params.category.slice(1);
-    console.log("Category: ", category);
     if (!day || !numNews || !category) {
         res.status(400).json({ error: "Day(as a dayjs object) and numNews fields should exists in the request body" });
         return;
@@ -40,13 +49,21 @@ app.post("/news-summaries/:category", async (req: Request<NewsCategoryParam, Sum
         return;
     }
     try {
-        const utcStartDate = dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
-        const utcEndDate = dayjsDay === dayjs() ? dayjsDay.endOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ"): dayjsDay.utc().format("YYYY-MM-DDTHH:mm:ssZ");
+        const utcStartDate = dayjsDay.startOf("day").utc().format("YYYY-MM-DDThh:mm:ss") + "Z";
+        const utcEndDate = dayjsDay.isBefore(dayjs(), "day") ? dayjsDay.endOf("day").utc().format("YYYY-MM-DDThh:mm:ss") + "Z": dayjs().utc().format("YYYY-MM-DDThh:mm:ss") + "Z";
+
+        // console.log(utcStartDate);
+        // console.log(utcEndDate);
+
         const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&max=${numNews}&from=${utcStartDate}&to=${utcEndDate}&apikey=${process.env.GNEWS_API_KEY}`);
         const jsonResponse = await response.json();
         const articles = jsonResponse.articles;
         for (const article of articles) {
-            urls.push(article.url);
+            if (article && article.url){
+               urls.push(article.url);
+            }else{
+                console.log("skipped a url");
+            }
         }
 
     }catch (error) {
@@ -105,7 +122,7 @@ app.post("/news-summaries/:category", async (req: Request<NewsCategoryParam, Sum
                     contents: [
                         {
                             parts: [
-                                {text: "Only Summarize the following news article in few concise bullet points and highlight the main thing at the beggining of the point, give it a concise heading also, your response should contain nothing else: " + article}
+                                {text: "Only Summarize the following news article in few concise bullet points(bullet list format) and highlight the main thing at the beggining of the point, give it only 1 concise heading(level 3 heading), your response should contain nothing else: " + article}
                             ]
                         }
                     ]
@@ -124,7 +141,7 @@ app.post("/news-summaries/:category", async (req: Request<NewsCategoryParam, Sum
             }
         }
 
-        if (dayjsDay.format("YYYY-MM-DD") !== dayjs().format("YYYY-MM-DD")){
+        if (!dayjsDay.isSame(dayjs(), "day")){
             await addSummaries(dayjsDay, summarizedArticles, urls, category, numNews);
         }
         res.json({ summarizedArticles, urls });

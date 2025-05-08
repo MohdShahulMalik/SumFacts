@@ -16,6 +16,8 @@ export default function CategorySummaries() {
     const [date, setDate] = useState(dayjs());
 
     useEffect(() => {
+        setSummaries([]);
+
         const previouosDate = date.subtract(1, "day").toISOString();
         const currentDate = date.toISOString();
 
@@ -42,13 +44,16 @@ export default function CategorySummaries() {
         });
 
         Promise.all([previousDayNewsFetch, currentDayNewsFetch]).then(([previousDayNewsRes, currentDayNewsRes]) => {
+            // console.log("Prev Status: ", previousDayNewsFetch.status);
+            // console.log("Current Status: ", currentDayNewsFetch.status);
             if (previousDayNewsRes.ok && currentDayNewsRes.ok){
                 return Promise.all([previousDayNewsRes.json(), currentDayNewsRes.json()]);
             }else{
                 throw new Error("Failed to fetch the summaries");
             }
         }).then(([previousDayNews, currentDayNews]) => {
-
+            console.log(previousDayNews);
+            console.log(currentDayNews);
             const previousDaySummaries = previousDayNews.summarizedArticles;
             const previousDaySummariesUrls = previousDayNews.urls;
             const currentDaySummaries = currentDayNews.summarizedArticles;
@@ -63,36 +68,36 @@ export default function CategorySummaries() {
         });
     }, [date]);
 
-    if (summaries.length === 0) {
-        return <div>Loading...</div>;
-    }
-
     return (
         <main className = {styles["summaries-body"]}>
             <div className = {styles["summaries-header"]}>
-                <button className = {styles["preivous-day-btn"]} onClick = {() => setDate(date.subtract(1, "day"))}>
-                    <img src = {previousDayBtn} alt = "Previous Day" className = {styles["previous-day-img"]}/>
+                <button onClick = {() => setDate(date.subtract(1, "day"))}>
+                    <img src = {previousDayBtn} alt = "Previous Day" />
                 </button>
-                <div className = {styles["date-details"]}>
-                    <h2 className = {styles["date-displaying"]}>{date.format("Do MMMM")}</h2>
-                    <h2 className = {styles["year-displaying"]}>{date.format("YYYY")}</h2>
+                <div className = {styles["summaries-details"]}>
+                    <h1 className = {styles["category-name"]}>{category.charAt(1).toUpperCase() + category.slice(2)}</h1>
+                    <h2>{date.format("Do MMMM")}</h2>
+                    <h2>{date.format("YYYY")}</h2>
                 </div>
-                <button className = {styles["next-day-btn"]} onClick = {() => {
+                <button onClick = {() => {
                     if (date.isSame(dayjs(), "day")){
                         return;
                     }else{
                         setDate(date.add(1, "day"));
                     }
-                }}><img src = {nextDayBtn} alt = "Next Day" className = {styles["next-day-img"]} /></button>
+                }}><img src = {nextDayBtn} alt = "Next Day" /></button>
             </div>
-            <h2 className = {styles["category-name"]}>{category.slice(1)}</h2>
             <hr className = {styles["divider"]}/>
             {
-                summaries.map((summary, i) => (
-                    <a href = {urls[i]} className = {styles["articles-link"]} >
-                        <ReactMarkdown>{summary}</ReactMarkdown>
-                    </a>
-                ))
+                summaries.length > 0 ? ( 
+                    summaries.map((summary, i) => (
+                        <a href = {urls[i]} className = {styles["articles-link"]} target = "_blank" key = {i}>
+                            <ReactMarkdown>{summary}</ReactMarkdown>
+                        </a>
+                    ))
+                )
+                :
+                (<div>Loading...</div>)
             }
         </main>
     );

@@ -39,7 +39,7 @@ export default function Summaries() {
     return (
         <main className = {styles["summaries-body"]}>
             <div className  = {styles["user-header"]}>
-                <img className = {styles["user-pfp"]} src = {user?.picture}/>
+                <img className = {styles["user-pfp"]} src = {user?.picture} referrerPolicy = "no-referrer"/>
                 <div className= {styles["user-interaction"]}>
                     <h2 className = {styles["user-name"]}>{user?.name}</h2>
                     <h3 className = {styles["user-message"]}>Stay Informed</h3>
