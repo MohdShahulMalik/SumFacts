@@ -28,7 +28,6 @@
     background-color: i.$color-primary;
     color: i.$color-secondary;
     padding: 0.5rem 0.75rem;
-    // font-weight: bolder;
     height: 2.5rem;
     font-size: 1rem;
     cursor: pointer;
@@ -50,6 +49,7 @@
     display: flex;
     column-gap: 2rem;
     width: 100%;
+    padding-top: 2rem;
     // height: 100%;
     .quick-description{
         @include i.flex-center;

@@ -24,9 +24,11 @@ export type ErrorResponse = {
 
 export type NewsSummaries = {
     summaries: string[];
+    urls: string[];
 }
 
 export type NewsSummariesRecord = {
     id: RecordId;
     summaries: string[];
+    urls: string[];
 }

@@ -4,7 +4,7 @@ import styles from "../styles/navbar.module.scss";
 import stylesHeader from "../styles/header.module.scss";
 
 export default function NavBar(){
-    const navPages: Page[] = [ "Summaries", "Fact-Check", "About", "Contact"];
+    const navPages: Page[] = [ "Summaries", "Fact-Check", "About"];
 
     return (
         <ul className = {`${styles["header-nav-ul"]} ${stylesHeader["header-nav-ul"]}`}>

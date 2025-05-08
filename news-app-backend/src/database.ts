@@ -3,7 +3,7 @@ import { surrealdbNodeEngines } from "@surrealdb/node";
 import dotenv from "dotenv";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc.js";
-import { NewsCategory, NewsSummaries } from "./types.js";
+import { NewsSummaries } from "./types.js";
 
 dotenv.config();
 dayjs.extend(utc);
@@ -45,27 +45,38 @@ export async function closeDB(){
     }
 }
 
-export async function addSummaries(day: Dayjs, summaries: string[], category: NewsCategory) {
-    const recordId = new RecordId(`summaries-${category}`, day.format("YYYY-MM-DD"));
-    const record = await db.create<NewsSummaries>(recordId, {
-        summaries
-    });
+export async function addSummaries(day: Dayjs, summaries: string[], urls: string[], category: string, numNews: number) {
+    const recordId = new RecordId(`summaries-${category}`, `${day.format("YYYY-MM-DD")}-${numNews}`);
+    try{
+        await db.create<NewsSummaries>(recordId, {
+            summaries,
+            urls
+        });
+    }catch(error){
+        console.error("Failed to add summaries to the database: ", error instanceof Error ? error.message : error);
+    }
 
-    return record; // I have put this here for testing purposes, but it will no be in the final project
+    return;
 }
 
-export async function getSummaries(day: Dayjs, category: NewsCategory) {
-    const recordId = new RecordId(`summaries-${category}`, day.format("YYYY-MM-DD"));
-    const record = await db.select<NewsSummaries>(recordId);
-
-    return record;
+export async function getSummaries(day: Dayjs, category: string, numNews: number) {
+    const recordId = new RecordId(`summaries-${category}`, `${day.format("YYYY-MM-DD")}-${numNews}`);
+    try{
+        const record = await db.select<NewsSummaries>(recordId);
+        return record;
+    }catch(error){
+        console.error("Failed to fetch the record from  the database: ", error instanceof Error ? error.message : error);
+    }
 }
 
-export async function recExists(day: Dayjs): Promise<boolean>{
-    const recId = new RecordId("summaries", day.format("YYYY-MM-DD"));
-    const [res] = await db.query<{result: boolean}[]>("RETURN record::exists($recId)", {
-        recId
-    });
+export async function recExists(day: Dayjs, category: string, numNews: number): Promise<boolean>{
+    const recId = new RecordId(`summaries-${category}`, `${day.format("YYYY-MM-DD")}-${numNews}`);
+    
+    const record = await db.select<NewsSummaries>(recId);
 
-    return res.result;
+    if (record){
+        return true;
+    }
+
+    return false;
 }

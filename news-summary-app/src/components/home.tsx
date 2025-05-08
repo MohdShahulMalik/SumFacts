@@ -35,7 +35,7 @@ export default function Home() {
                 <div className = {`${styles["time-saving-description"]} ${styles["quick-description"]}`}>
                     <img className = {styles["quick-description-img"]} src = {timeSavingImg} alt = "save-time"/>
                     <h3>Save Time</h3>
-                    <h4>Stay informed in less time, effortlessly</h4>
+                    <h4>Stay informed quickly, without the long reads</h4>
                 </div>
                 
             </div>

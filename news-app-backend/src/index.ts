@@ -2,7 +2,7 @@ import express, { Express, Request, Response } from "express";
 import { ArticleData, extract } from "@extractus/article-extractor";
 import { load } from "cheerio";
 import dotenv from "dotenv";
-import type { NewsDay, ArticleUrls, SummarizedArticles, ErrorResponse, NewsCategory, NewsCategoryParam} from "./types.js";
+import type { NewsDay, ArticleUrls, SummarizedArticles, ErrorResponse, NewsCategoryParam, NewsSummariesRecord} from "./types.js";
 import { addSummaries, closeDB, getSummaries, recExists, startDB } from "./database.js";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc.js";
@@ -17,72 +17,50 @@ startDB();
 
 app.post("/news-summaries/:category", async (req: Request<NewsCategoryParam, SummarizedArticles | ErrorResponse, NewsDay, null>, res: Response) => {
     const { day, numNews }: NewsDay = req.body;
-    const category: NewsCategory = req.params.category;
+    const category: string= req.params.category.slice(1);
+    console.log("Category: ", category);
     if (!day || !numNews || !category) {
         res.status(400).json({ error: "Day(as a dayjs object) and numNews fields should exists in the request body" });
         return;
     }
     const dayjsDay: Dayjs = dayjs(day);
 
-    if (numNews !== 10 && numNews !== 5){
-        res.status(400).json({ error: "numNews should be 5 or 10" });
+    const urls: ArticleUrls = [];
+
+
+    const summariesExist = await recExists(dayjsDay, category, numNews);
+    if (summariesExist) {
+        const newsRecord: NewsSummariesRecord | undefined = await getSummaries(dayjsDay, category, numNews);
+        const summaries = newsRecord?.summaries;
+        const urls = newsRecord?.urls;
+        res.json({ 
+            summarizedArticles: summaries,
+            urls 
+        });
+        return;
+    }
+    try {
+        const utcStartDate = dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
+        const utcEndDate = dayjsDay === dayjs() ? dayjsDay.endOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ"): dayjsDay.utc().format("YYYY-MM-DDTHH:mm:ssZ");
+        const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&max=${numNews}&from=${utcStartDate}&to=${utcEndDate}&apikey=${process.env.GNEWS_API_KEY}`);
+        const jsonResponse = await response.json();
+        const articles = jsonResponse.articles;
+        for (const article of articles) {
+            urls.push(article.url);
+        }
+
+    }catch (error) {
+
+        if (error instanceof Error){
+            console.error("Failed to fetch the articles ", error.message);
+        }else {
+            console.error("Failed to fetch the articles ", error);
+        }
+
+        res.status(500).json({ error: "Failed to fetch the articles" });
         return;
     }
 
-    const urls: ArticleUrls = [];
-
-    if (numNews === 10){
-        const summariesExist = await recExists(dayjsDay);
-        if (summariesExist) {
-            const summarizedArticles = await getSummaries(dayjsDay, category);
-            res.json({ summarizedArticles });
-            return;
-        }
-        try {
-            const utcStartDate = dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
-            const utcEndDate = dayjsDay.endOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
-            const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&max=10&from=${utcStartDate}&to=${utcEndDate}&apikey=${process.env.GNEWS_API_KEY}`);
-            const jsonResponse = await response.json();
-            const articles = jsonResponse.articles;
-            for (const article of articles) {
-                urls.push(article.url);
-            }
-
-        }catch (error) {
-
-            if (error instanceof Error){
-                console.error("Failed to fetch the articles ", error.message);
-            }else {
-                console.error("Failed to fetch the articles ", error);
-            }
-
-            res.status(500).json({ error: "Failed to fetch the articles" });
-            return;
-        }
-    }else {
-        try {
-            //TODO: make the api return articles based on the date
-            const utcStartDate = dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ssZ");
-            const utcEndDate = dayjsDay.utc().format("YYYY-MM-DDTHH:mm:ssZ");
-            const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&max=5&from=${utcStartDate}&to=${utcEndDate}&apikey=${process.env.GNEWS_API_KEY}`);
-            const jsonResponse = await response.json();
-            const articles = jsonResponse.articles;
-            for (const article of articles) {
-                urls.push(article.url);
-            }
-
-        }catch (error) {
-
-            if (error instanceof Error){
-                console.error("Failed to fetch the articles ", error.message);
-            }else {
-                console.error("Failed to fetch the articles ", error);
-            }
-
-            res.status(500).json({ error: "Failed to fetch the articles" });
-            return;
-        }
-    }
 
     const articles: string[] = [];
     try {
@@ -127,7 +105,7 @@ app.post("/news-summaries/:category", async (req: Request<NewsCategoryParam, Sum
                     contents: [
                         {
                             parts: [
-                                {text: "Just summarize the following news article in few concise bullet points and highlight the main thing at the beggining of the point, give it a concise heading also, your response should contain nothing else: " + article}
+                                {text: "Only Summarize the following news article in few concise bullet points and highlight the main thing at the beggining of the point, give it a concise heading also, your response should contain nothing else: " + article}
                             ]
                         }
                     ]
@@ -146,10 +124,10 @@ app.post("/news-summaries/:category", async (req: Request<NewsCategoryParam, Sum
             }
         }
 
-        if (numNews === 10){
-            await addSummaries(dayjsDay, summarizedArticles, category);
+        if (dayjsDay.format("YYYY-MM-DD") !== dayjs().format("YYYY-MM-DD")){
+            await addSummaries(dayjsDay, summarizedArticles, urls, category, numNews);
         }
-        res.json({ summarizedArticles });
+        res.json({ summarizedArticles, urls });
     }catch(error) {
         if (error instanceof Error){
             console.error("Failed to summarize the article ", error.message);
