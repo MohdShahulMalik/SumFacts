@@ -37,7 +37,6 @@
   },
   "dependencies": {
     "@extractus/article-extractor": "^8.0.17",
-    "@google/genai": "^0.9.0",
     "@surrealdb/node": "1.0.0-beta.3",
     "cheerio": "^1.0.0",
     "cors": "^2.8.5",

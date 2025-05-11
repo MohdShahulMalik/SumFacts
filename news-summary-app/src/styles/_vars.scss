@@ -4,5 +4,5 @@ $color-primary: #2aaa42;
 $color-secondary: white;
 $color-hover: c.scale($color-primary, $lightness: 8%);
 $color-active: c.scale($color-primary, $lightness: -8%);
-$color-hover-btn: c.scale($color-primary, $lightness: 20%);
-$color-active-btn: c.scale($color-primary, $lightness: -20%);
+$color-hover-trans-btn: c.scale($color-primary, $lightness: 20%);
+$color-active-trans-btn: c.scale($color-primary, $lightness: -20%);

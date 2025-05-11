@@ -13,7 +13,8 @@
     height: 15vh;
     height: 15dvh;
     height: 15svh;
-    padding-bottom: 3.5rem;
+    // padding-bottom: 3.5rem;
+    // padding-left: 2rem;
 }
 
 .user-interaction{
@@ -35,8 +36,8 @@
 
 .user-pfp{
     box-shadow: 0 0 0.5rem black;
-    width: 7rem;
-    height: 7rem;
+    // width: 7rem;
+    // height: 7rem;
 }
 
 .logout{
@@ -54,13 +55,13 @@
 }
 
 .logout:hover{
-    border-color:  i.$color-hover-btn;
-    color: i.$color-hover-btn;
+    border-color:  i.$color-hover-trans-btn;
+    color: i.$color-hover-trans-btn;
 }
 
 .logout:active{
-    border-color: i.$color-active-btn;
-    color: i.$color-active-btn;
+    border-color: i.$color-active-trans-btn;
+    color: i.$color-active-trans-btn;
 }
 
 .section-summary{
@@ -70,8 +71,8 @@
 }
 
 .news-category-img{
-    width: 5rem;
-    height: 5rem;
+    width: 4rem;
+    height: 4rem;
     object-fit: cover;
 }
 

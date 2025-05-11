@@ -6,11 +6,13 @@ import advancedFormat from "dayjs/plugin/advancedFormat.js";
 import ReactMarkdown from "react-markdown";
 import previousDayBtn from "../assets/left.png";
 import nextDayBtn from "../assets/right.png";
+import LoadingSkeleton from "./loading-skeleton";
 
 dayjs.extend(advancedFormat);
 
 export default function CategorySummaries() {
-    const { category } = useParams();
+    let { category } = useParams();
+    category = category as string;
     const [summaries, setSummaries] = useState<string[]>([]);
     const [urls, setUrls] = useState<string[]>([]);
     const [date, setDate] = useState(dayjs());
@@ -75,7 +77,7 @@ export default function CategorySummaries() {
                     <img src = {previousDayBtn} alt = "Previous Day" />
                 </button>
                 <div className = {styles["summaries-details"]}>
-                    <h1 className = {styles["category-name"]}>{category.charAt(1).toUpperCase() + category.slice(2)}</h1>
+                    <h1 className = {styles["category-name"]}>{category?.charAt(1).toUpperCase()  + category?.slice(2)}</h1>
                     <h2>{date.format("Do MMMM")}</h2>
                     <h2>{date.format("YYYY")}</h2>
                 </div>
@@ -97,7 +99,7 @@ export default function CategorySummaries() {
                     ))
                 )
                 :
-                (<div>Loading...</div>)
+                (<LoadingSkeleton/>)
             }
         </main>
     );

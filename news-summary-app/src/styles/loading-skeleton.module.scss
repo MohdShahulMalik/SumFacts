@@ -1,0 +1,56 @@
+.skeleton-container{
+    padding: 1.5rem;
+}
+
+.skeleton-heading{
+    height: 1.5rem;
+    width: 25%;
+    background-image: linear-gradient(90deg,
+    #e0e0e0 25%,
+    #f0f0f0 50%,
+    #e0e0e0 75%
+    );
+    margin-left: 37.5%;
+}
+
+.skeleton-list{
+    li:nth-child(1){
+        width: 50%;
+    }
+    li:nth-child(2){
+        width: 45%;
+    }li:nth-child(3){
+        width: 55%;
+    }li:nth-child(4){
+        width: 30%;
+    }li:nth-child(5){
+        width: 48%;
+    }
+}
+
+.skeleton-points{
+    height: 1.2rem;
+    margin-bottom: 0.25rem;
+    background-image: linear-gradient(90deg,
+    #e0e0e0 25%,
+    #f0f0f0 50%,
+    #e0e0e0 75%
+    );
+}
+
+.skeleton-heading,
+.skeleton-points{
+    background-size: 200% 100%;
+    border-radius: 10rem;
+    animation: shimmer 3.5s infinite;
+}
+
+@keyframes shimmer{
+    0%{
+        background-position: 200% 0;
+    }
+
+    100%{
+        background-position: -200% 0;
+    }
+}
