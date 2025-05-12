@@ -5,7 +5,7 @@
     @include i.position-center;
     flex-direction: column;
     width: 55%;
-    // z-index: 500;
+    height: calc(100svh - 5rem);
 }
 
 .tag{

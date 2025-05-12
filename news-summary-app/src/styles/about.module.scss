@@ -1,0 +1,81 @@
+@use "index" as i;
+
+.about-body{
+    @include i.flex-center;
+    text-align: center;
+    margin: 0;
+    flex-direction: column;
+    position: relative;
+    width: 70%;
+    transform: translateX(22%);
+    padding-bottom: 3rem;
+
+    .globe-img{
+        width: 40svh;
+        height: 40svh;
+        background-image: url("../assets/globe.png");
+        background-size: contain;
+    }
+
+    p{
+        margin-top: 0;
+    }
+
+    hr{
+        width: 100%;
+    }
+
+    .visual-description{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        .two-men-img{
+            // width: 50%;
+            height: 50svh;
+        }
+        .visual-description-text{
+            width: 50%;
+            // background-color: violet;
+            font-size: 5rem;
+            text-align: left;
+        }
+    }
+
+    .get-started-container{
+        display: flex;
+        width: 100%;
+        height: 40svh;
+        .get-started-description{
+            text-align: left;
+            width: 70%;
+            height: 100%;
+            background-color: cadetblue;
+            padding: 0 1.5rem;
+            button{
+                background-color: i.$color-primary;
+                color: white;
+                padding: 0.5rem 2rem;
+                height: 15%;
+                border: solid black 0.1rem;
+                border-radius: 10rem;
+                font-weight: bold;
+                font-size: 1rem;
+                cursor: pointer;
+            }
+        }
+        .get-started-img{
+            width: 30%;
+            height: 100%;
+            background-image: url("../assets/man-newspaper.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    }
+
+    footer{
+        left: -20%;
+        right: -20%;
+    }
+}
+

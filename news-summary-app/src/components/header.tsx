@@ -1,5 +1,4 @@
 import NavBar from "./navbar";
-import logo from "../assets/logo.png";
 import styles from "../styles/header.module.scss";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,7 +9,7 @@ export default function Header() {
     return (
         <header>
             <div className = {styles.logo}>
-                <Link to = "/" className= {styles["logo-icon-link"]}><img className = {styles["logo-icon"]} src={logo} alt="Logo" /></Link>
+                <Link to = "/" className= {styles["logo-icon-link"]}><img className = {styles["logo-icon"]} src="/logo.png" alt="Logo" /></Link>
                 <Link to = "/" className = {styles["logo-name-link"]}><h3>SumFacts</h3></Link>
             </div>
             <nav className = {styles["desktop-nav"]}>
