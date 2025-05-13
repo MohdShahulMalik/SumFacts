@@ -1,5 +1,4 @@
 import twoMen from "../assets/two-men.png";
-import globe from "../assets/globe.png";
 import styles from "../styles/about.module.scss";
 import { useAuth0 } from "@auth0/auth0-react";
 import Footer from "./footer";
