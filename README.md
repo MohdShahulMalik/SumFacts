@@ -28,28 +28,6 @@ SumFacts addresses these challenges by offering a dual-purpose platform that lev
 
 ---
 
-## Visual Demonstrations
-
-### News Summarizer in Action
-
-Watch a brief demonstration of the news summarizer feature, showcasing how users can browse categories and view AI-generated summaries for different days.
-
-<p align="center">
-  <!-- Placeholder for News Summarizer Video -->
-  <em>Video coming soon...</em>
-</p>
-
-### Fact-Checker in Action
-
-This video demonstrates the on-demand fact-checking tool. See how a user can input a claim and receive a grounded, factual assessment with references.
-
-<p align="center">
-  <!-- Placeholder for Fact-Checker Video -->
-  <em>Video coming soon...</em>
-</p>
-
----
-
 ## Tech Stack & Architecture
 
 This project is a monorepo containing a React frontend and a Node.js backend. The frontend communicates with the backend via a REST API, which in turn interacts with external services (GNews, Google AI) and the SurrealDB database.
@@ -96,7 +74,7 @@ To run this project locally, follow these steps:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/SumFacts.git
+git clone https://github.com/MohdShahulMalik/SumFacts.git
 cd SumFacts
 ```
 
@@ -136,10 +114,6 @@ GOOGLE_API_KEY=your-google-api-key
 ```
 # Vite Port
 VITE_PORT=5173
-
-# Auth0 Credentials
-VITE_AUTH0_DOMAIN=your-auth0-domain
-VITE_AUTH0_CLIENT_ID=your-auth0-client-id
 
 # API Endpoints
 VITE_NEWS_ENDPOINT=http://localhost:5000/news-summaries
