@@ -8,6 +8,7 @@ import About from "./components/about";
 import Footer from "./components/footer";
 import { Routes, Route } from "react-router-dom";
 import "./styles/app.scss";
+import Loading from "./components/loading";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
 
       <Routes>
         <Route path = "/" element = {<><Home/><Footer/></>}/>
+        <Route path = "/load" element = {<Loading/>} />
         <Route path = "/summaries" element = {<ProtectedRoute component = {Summaries} />} />
         <Route path = "/summaries/:category" element = {<ProtectedRoute component = {CategorySummaries} />} />
         <Route path = "/fact-check" element = {<ProtectedRoute component = {FactCheck} />} />

@@ -1,0 +1,16 @@
+@use "index" as i;
+
+  border-radius: 50%;
+.spinner-outter{
+  @include i.postion-center; 
+  height: 5rem;
+  width: 5rem;
+  background-color: black;
+}
+
+.spinner-inner{
+  @include i.position-center;
+  height: 4rem;
+  width: 4rem;
+  background-color: white;
+}

@@ -16,6 +16,9 @@
     }
 }
 
+.header-divider{
+    
+}
 .summaries-details{
     display: flex;
     flex-direction: column;
@@ -58,4 +61,9 @@
 .articles-link:hover{
     border: solid i.$color-primary 0.5rem;
     border-radius: 3rem;
+}
+
+.articles-divider{
+    width: 90%;
+    color: rgba(235, 235, 235, 1);
 }

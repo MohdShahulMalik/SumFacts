@@ -3,7 +3,7 @@ import { surrealdbNodeEngines } from "@surrealdb/node";
 import dotenv from "dotenv";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc.js";
-import { NewsSummaries } from "./types.js";
+import { NewsSummaries, NewsSummariesRecord } from "./types.js";
 
 dotenv.config();
 dayjs.extend(utc);
@@ -45,21 +45,22 @@ export async function closeDB(){
     }
 }
 
-export async function addSummaries(day: Dayjs, summaries: string[], urls: string[], category: string, numNews: number) {
+export async function addSummaries(day: Dayjs, summaries: string[], urls: string[], category: string, numNews: number): Promise<NewsSummariesRecord | undefined> {
     const recordId = new RecordId(`summaries-${category}`, `${day.format("YYYY-MM-DD")}-${numNews}`);
     try{
-        await db.create<NewsSummaries>(recordId, {
+       const rec = await db.create<NewsSummaries>(recordId, {
             summaries,
             urls
         });
+
+        return rec;
     }catch(error){
         console.error("Failed to add summaries to the database: ", error instanceof Error ? error.message : error);
     }
 
-    return;
 }
 
-export async function getSummaries(day: Dayjs, category: string, numNews: number) {
+export async function getSummaries(day: Dayjs, category: string, numNews: number): Promise<NewsSummariesRecord | undefined> {
     const recordId = new RecordId(`summaries-${category}`, `${day.format("YYYY-MM-DD")}-${numNews}`);
     try{
         const record = await db.select<NewsSummaries>(recordId);

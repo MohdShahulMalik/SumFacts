@@ -28,6 +28,12 @@ SumFacts addresses these challenges by offering a dual-purpose platform that lev
 
 ---
 
+## Video Tutorial
+
+A comprehensive video tutorial is available to guide you through the features and functionality of SumFacts. Watch the video below to see the app in action.
+
+[![SumFacts Video Demonstration](https://img.youtube.com/vi/2IqoANI8Neg/0.jpg.jpg)](https://www.youtube.com/watch?v=2IqoANI8Neg)
+
 ## Tech Stack & Architecture
 
 This project is a monorepo containing a React frontend and a Node.js backend. The frontend communicates with the backend via a REST API, which in turn interacts with external services (GNews, Google AI) and the SurrealDB database.

@@ -89,13 +89,16 @@ export default function CategorySummaries() {
                     }
                 }}><img src = {nextDayBtn} alt = "Next Day" /></button>
             </div>
-            <hr className = {styles["divider"]}/>
+            <hr className = {styles["header-divider"]}/>
             {
                 summaries.length > 0 ? ( 
                     summaries.map((summary, i) => (
-                        <a href = {urls[i]} className = {styles["articles-link"]} target = "_blank" key = {i}>
-                            <ReactMarkdown>{summary}</ReactMarkdown>
-                        </a>
+                        <>
+                            <a href = {urls[i]} className = {styles["articles-link"]} target = "_blank" key = {i}>
+                                <ReactMarkdown>{summary}</ReactMarkdown>
+                            </a>
+                            <hr className= {styles["articles-divider"]}/>
+                        </>
                     ))
                 )
                 :

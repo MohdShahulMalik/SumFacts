@@ -23,13 +23,14 @@ import axios from "axios";
 import timezone from "dayjs/plugin/timezone.js";
 import cors from "cors";
 import { Agent } from "https";
+import tls from "tls";
 
 dotenv.config();
 dayjs.extend(utc);
 dayjs.extend(timezone);
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT as string);
-const httpsAgent = new Agent({ family: 4 });
+const httpsAgent = new Agent({ family: 4, ciphers: tls.DEFAULT_CIPHERS });
 
 app.use(express.json());
 app.use(
@@ -83,7 +84,7 @@ app.post(
     }
     try {
       const utcStartDate =
-        dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ss") + "Z";
+        dayjsDay.startOf("day").utc().format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z";
       const utcEndDate = dayjsDay.isBefore(dayjs(), "day")
         ? dayjsDay.endOf("day").utc().format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z"
         : dayjs().utc().format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z";
@@ -119,7 +120,11 @@ app.post(
     try {
       const articlesDataPromises: Promise<ArticleData | null>[] = [];
       for (const url of urls) {
-        const articleDataPromise: Promise<ArticleData | null> = extract(url);
+        const articleDataPromise: Promise<ArticleData | null> = extract(
+          url,
+          null,
+          { agent: httpsAgent },
+        );
         articlesDataPromises.push(articleDataPromise);
       }
       const articlesData: (ArticleData | null)[] =
@@ -136,18 +141,20 @@ app.post(
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Failed to extract the article ", error.message);
+        console.error("Failed to extract an article ", error.message);
       } else {
-        console.error("Failed to extract the article ", error);
+        console.error("Failed to extract an article ", error);
       }
-
-      res.status(500).json({ error: "Failed to extract the article " });
     }
 
     const summarizedArticles: string[] = [];
     try {
-      const geminiPromises = [];
+      if (!articles) {
+        res.status(500).json({ error: "failed to extract articles" });
+        return;
+      }
 
+      const geminiPromises = [];
       for (const article of articles) {
         const geminiPromise = axios.post(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${process.env.GOOGLE_API_KEY}`,
@@ -201,6 +208,7 @@ app.post(
       }
 
       res.status(500).json({ error: "Failed to summarize the article " });
+      return;
     }
   },
 );
