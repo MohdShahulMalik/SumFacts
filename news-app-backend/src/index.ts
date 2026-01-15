@@ -122,7 +122,7 @@ app.post(
       for (const url of urls) {
         const articleDataPromise: Promise<ArticleData | null> = extract(
           url,
-          null,
+          undefined,
           { agent: httpsAgent },
         );
         articlesDataPromises.push(articleDataPromise);
@@ -157,7 +157,7 @@ app.post(
       const geminiPromises = [];
       for (const article of articles) {
         const geminiPromise = axios.post(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${process.env.GOOGLE_API_KEY}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
           {
             contents: [
               {

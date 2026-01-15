@@ -1,1 +1,4 @@
 **/.env
+
+**/node_modules
+news-app-backend/surreal_data
