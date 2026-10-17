@@ -12,7 +12,7 @@ async function geminiResponse(
 ): Promise<[string, string, string[], string[]]> {
   console.log("Here in the geminiResponseMethod");
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
+    model: "gemini-3.5-flash-lite",
     contents: [
       `Give the assessment of the truthfuless of the follwoing claim(highlight the assessment):\n${claimOrNews}`,
     ],
