@@ -1,7 +1,7 @@
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { FC, ComponentType } from "react";
 import { useLocation } from "react-router-dom";
-import Loading from "./loading";
+import Loading from "../pages/loading";
 
 interface ProtectedRouteProps {
   component: ComponentType<object>;
