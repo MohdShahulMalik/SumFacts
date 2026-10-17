@@ -6,7 +6,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat.js";
 import ReactMarkdown from "react-markdown";
 import previousDayBtn from "../assets/left.png";
 import nextDayBtn from "../assets/right.png";
-import LoadingSkeleton from "./loading-skeleton";
+import LoadingSkeleton from "../components/loading-skeleton";
 
 dayjs.extend(advancedFormat);
 
