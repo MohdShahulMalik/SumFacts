@@ -1,60 +1,36 @@
-import { GoogleGenAI } from "@google/genai";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import styles from "../styles/fact-check.module.scss";
 
-const ai = new GoogleGenAI({
-  apiKey: `${import.meta.env.VITE_GEMINI_API_KEY}`,
-});
-
-async function geminiResponse(
+async function fetchFactCheck(
   claimOrNews: string,
 ): Promise<[string, string, string[], string[]]> {
-  console.log("Here in the geminiResponseMethod");
-  const response = await ai.models.generateContent({
-    model: "gemini-3.5-flash-lite",
-    contents: [
-      `Give the assessment of the truthfuless of the follwoing claim(highlight the assessment):\n${claimOrNews}`,
-    ],
-    config: {
-      tools: [{ googleSearch: {} }],
+  console.log("Here in the fetchFactCheck method");
+  const response = await fetch("/fact-check", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify({ claim: claimOrNews }),
   });
-  if (!response) {
-    console.log("NO RESPONSE");
-  }
-  console.log("Response recieved, ", response);
 
-  let res = response.candidates?.[0].content?.parts?.[0].text;
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.error ?? `Fact-check request failed (${response.status})`);
+  }
+
+  const data = await response.json();
+  console.log("Response recieved, ", data);
+
+  const res = data.assessment as string;
   if (!res) {
     console.log(res);
   }
-  res = res!;
-
-  const html =
-    response.candidates?.[0].groundingMetadata?.searchEntryPoint
-      ?.renderedContent || "";
+  const html = data.searchHtml ?? "";
   // html = "\"" + html + "\"";
   // html = JSON.parse(html);
 
-  const referencesFromResponse =
-    response.candidates?.[0].groundingMetadata?.groundingChunks;
-  const tempReferences: string[] = [];
-  const tempReferencesTitles: string[] = [];
-
-  if (referencesFromResponse) {
-    for (const referenceData of referencesFromResponse) {
-      const uri = referenceData.web?.uri;
-      const title = referenceData.web?.title;
-      if (!uri || !title) {
-        continue;
-      }
-      tempReferences.push(uri);
-      tempReferencesTitles.push(title);
-    }
-  }
-
-  return [res, html, tempReferences, tempReferencesTitles];
+  return [res, html, data.references ?? [], data.referenceTitles ?? []];
 }
 
 export default function FactCheck() {
@@ -76,7 +52,7 @@ export default function FactCheck() {
       return;
     }
 
-    geminiResponse(claimOrNews)
+    fetchFactCheck(claimOrNews)
       .then(([res, html, tempReferences, tempReferencesTitles]) => {
         setResult(res);
         setGoogleHtml(html);
@@ -149,7 +125,7 @@ export default function FactCheck() {
       )}
 
       <button className={styles["submit-btn"]} onClick={handleOnClick}>
-        Sumbit
+        Submit
       </button>
     </div>
   );

@@ -63,6 +63,7 @@ export default function Summaries() {
         <img
           className={styles["user-pfp"]}
           src={user?.picture}
+          alt={user?.name ?? "User profile picture"}
           referrerPolicy="no-referrer"
         />
         <div className={styles["user-interaction"]}>
@@ -74,7 +75,7 @@ export default function Summaries() {
           onClick={() =>
             logout({
               logoutParams: {
-                returnTo: `http://localhost:${import.meta.env.VITE_PORT}`,
+                returnTo: window.location.origin,
               },
             })
           }
@@ -92,12 +93,13 @@ export default function Summaries() {
             return (
               <li key={category} className={styles["news-category"]}>
                 <Link
-                  to={`/summaries/:${category.toLowerCase()}`}
+                  to={`/summaries/${category.toLowerCase()}`}
                   className={styles["news-category-link"]}
                 >
                   <img
                     className={styles["news-category-img"]}
                     src={categoryImages[category.toLowerCase()]}
+                    alt={category}
                   />
                   <div className={styles["news-category-detials"]}>
                     <h3 className={styles["news-category-name"]}>{category}</h3>

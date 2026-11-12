@@ -24,7 +24,7 @@ export default function CategorySummaries() {
     const currentDate = date.toISOString();
 
     const previousDayNewsFetch = fetch(
-      `${import.meta.env.VITE_NEWS_ENDPOINT}/${category}`,
+      `/news-summaries/${category}`,
       {
         method: "POST",
         headers: {
@@ -38,7 +38,7 @@ export default function CategorySummaries() {
     );
 
     const currentDayNewsFetch = fetch(
-      `${import.meta.env.VITE_NEWS_ENDPOINT}/${category}`,
+      `/news-summaries/${category}`,
       {
         method: "POST",
         headers: {
@@ -92,7 +92,7 @@ export default function CategorySummaries() {
         </button>
         <div className={styles["summaries-details"]}>
           <h1 className={styles["category-name"]}>
-            {category?.charAt(1).toUpperCase() + category?.slice(2)}
+            {category?.charAt(0).toUpperCase() + category?.slice(1)}
           </h1>
           <h2>{date.format("Do MMMM")}</h2>
           <h2>{date.format("YYYY")}</h2>

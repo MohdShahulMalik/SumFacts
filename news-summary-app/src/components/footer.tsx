@@ -6,8 +6,6 @@ export default function Footer() {
                 <div className= {styles["footer-content"]}>
                     <hr className = {styles["divider"]}/>
                     <h3 className = {styles["app-name"]}>SumFacts</h3>
-                    <span className = {styles["copyrights"]}>2025 &copy; SumFacts</span>
-                    <span className = {styles["rights"]}>All rights reserves.</span>
                 </div>
             </footer>
     );
