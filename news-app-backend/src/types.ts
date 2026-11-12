@@ -32,3 +32,14 @@ export type NewsSummariesRecord = {
     summaries: string[];
     urls: string[];
 }
+
+export type Claim = {
+    claim: string;
+};
+
+export type FactCheckResponse = {
+    assessment: string;
+    searchHtml: string;
+    references: string[];
+    referenceTitles: string[];
+};
