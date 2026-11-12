@@ -1,25 +1,26 @@
 @use "index" as i;
 
 .fact-check-body{
-    // @include i.flex-positon;
     @include i.flex-center;
-    // @include i.position-center;
     height: max-content;
     flex-direction: column;
-    padding: 2rem 20rem;
-    row-gap: 0.5rem;
-    width: 55vw;
-    width: 55dvw;
-    width: 55svw;
+    padding: 2rem clamp(1rem, 5vw, 2rem);
+    row-gap: 0.75rem;
+    width: min(100%, 45rem);
+    margin-inline: auto;
+    box-sizing: border-box;
     h1{
         font-family: Verdana, Geneva, Tahoma, sans-serif;
         margin-bottom: 0;
         text-align: center;
+        font-size: clamp(1.75rem, 7vw, 2.25rem);
     }
     h3{
         margin-top: 0;
         margin-bottom: 1rem;
         font-family: Verdana, Geneva, Tahoma, sans-serif;
+        text-align: center;
+        font-size: clamp(1rem, 4vw, 1.25rem);
     }
 }
 
@@ -35,10 +36,10 @@
     padding-left: 1.35rem;
     padding-right: 1rem;
     font-family: Arial, sans-serif;
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 3vw, 1.25rem);
     border: none;
+    box-sizing: border-box;
     border-radius: 5rem;
-    // border-top: 0.25rem solid transparent;
     border-bottom: 0.25rem solid transparent;
     box-shadow: 0 0 0.5rem black;
     resize: none;
@@ -54,18 +55,20 @@
     overflow: hidden;
     animation: appearing 2s ease-in-out forwards;
     border: solid 0.1rem black;
-    border-radius: 2rem;
+    border-radius: 1.5rem;
     padding: 0rem 1rem;
     padding-bottom: 1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .loading-result{
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
-    width: 50%;
+    width: min(100%, 20rem);
     padding: 1rem;
     border: solid 0.1rem black;
-    border-radius: 2rem;
+    border-radius: 1.5rem;
 }
 
 .empty-result{
@@ -73,7 +76,7 @@
 }
 
 .references{
-    padding: 1rem 1rem;
+    padding: 1rem 0;
     .references-summary{
         font-size: 1rem;
         font-weight: bold;
@@ -82,14 +85,29 @@
         color: i.$color-primary;
         border: solid 0.25rem i.$color-primary;
         border-radius: 1rem;
-        padding: 0.25rem 0.5rem;
+        padding: 0.5rem 0.75rem;
+        min-height: 2.75rem;
+        box-sizing: border-box;
         width: max-content;
+        max-width: 100%;
         cursor: pointer;
+    }
+    ul{
+        overflow-wrap: anywhere;
+        padding-left: 1.25rem;
+        li{
+            padding: 0.25rem 0;
+            a{
+                display: inline-block;
+                padding: 0.25rem 0;
+            }
+        }
     }
 }
 
 .submit-btn{
-    width: 25%;
+    width: min(100%, 15rem);
+    min-height: 2.75rem;
     padding: 0.7rem 1rem;
     font-size: large;
     background-color: i.$color-primary;
@@ -97,7 +115,11 @@
     border-radius: 10rem;
     border: none;
     cursor: pointer;
+}
 
+.reference-link{
+    color: i.$color-primary;
+    overflow-wrap: anywhere;
 }
 
 .references-summary{
@@ -109,11 +131,9 @@
     0%{
         opacity: 0;
         max-height: 0;
-        // transform: scaleY(0);
     }
     100%{
         opacity: 1;
-        max-height: max-content;
-        // transform: scaleY(1);
+        max-height: 200rem;
     }
 }

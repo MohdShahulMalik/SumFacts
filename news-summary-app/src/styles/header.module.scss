@@ -1,6 +1,8 @@
+@use "index" as i;
+
 .logo,
 header{
-    display: flex;   
+    display: flex;
 }
 
 header{
@@ -9,8 +11,8 @@ header{
     left: 0;
     right: 0;
     height: 5rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: clamp(1rem, 4vw, 1.5rem);
+    padding-right: clamp(1rem, 4vw, 1.5rem);
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.5);
@@ -28,18 +30,29 @@ header{
         position: relative;
         .header-nav-ul{
             position: absolute;
+            top: calc(100% + 0.75rem);
             display: block;
-            right: 100%;
+            right: 0;
             width: max-content;
+            min-width: 10rem;
+            max-width: calc(100vw - 2rem);
             background-color: white;
             border-radius: 0.5rem;
             box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
+            padding: 0.5rem 0;
             .header-nav-li{
                 display: flex;
                 justify-content: center;
                 cursor: pointer;
-                padding: 0.5rem 1rem;
+                padding: 0;
                 z-index: 10;
+                .header-nav-a{
+                    display: block;
+                    padding: 0.75rem 1.25rem;
+                    min-height: 2.75rem;
+                    min-width: 100%;
+                    box-sizing: border-box;
+                }
             }
             .header-nav-li:hover{
                 background-color: #f0f2fb;
@@ -51,6 +64,9 @@ header{
 .mobile-nav-summary{
     list-style: none;
     cursor: pointer;
+    @include i.flex-center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
     svg{
         width: 1.5rem;
         height: 1.5rem;

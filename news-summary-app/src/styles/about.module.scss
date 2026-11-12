@@ -3,18 +3,20 @@
 .about-body{
     @include i.flex-center;
     text-align: center;
-    margin: 0;
+    margin: 0 auto;
     flex-direction: column;
     position: relative;
-    width: 70%;
-    transform: translateX(22%);
-    padding-bottom: 3rem;
+    width: min(100% - 2rem, 60rem);
+    padding: 0 0 3rem;
+    box-sizing: border-box;
 
     .globe-img{
-        width: 40svh;
-        height: 40svh;
+        width: min(40svh, 80vw, 22rem);
+        height: min(40svh, 80vw, 22rem);
         background-image: url("../assets/globe.png");
         background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
     }
 
     p{
@@ -28,15 +30,18 @@
     .visual-description{
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
         width: 100%;
         .two-men-img{
-            // width: 50%;
-            height: 50svh;
+            height: auto;
+            max-height: 50svh;
+            width: min(45%, 22rem);
+            object-fit: contain;
         }
         .visual-description-text{
-            width: 50%;
-            // background-color: violet;
-            font-size: 5rem;
+            width: 55%;
+            font-size: clamp(2rem, 8vw, 5rem);
             text-align: left;
         }
     }
@@ -45,17 +50,26 @@
         display: flex;
         width: 100%;
         height: 40svh;
+        min-height: 16rem;
         .get-started-description{
             text-align: left;
             width: 70%;
             height: 100%;
             background-color: cadetblue;
             padding: 0 1.5rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            h1{
+                font-size: clamp(1.5rem, 4vw, 2rem);
+            }
             button{
+                align-self: start;
                 background-color: i.$color-primary;
                 color: white;
-                padding: 0.5rem 2rem;
-                height: 15%;
+                padding: 0.75rem 2rem;
+                min-height: 2.75rem;
                 border: solid black 0.1rem;
                 border-radius: 10rem;
                 font-weight: bold;
@@ -72,10 +86,35 @@
             background-position: center;
         }
     }
-
-    footer{
-        left: -20%;
-        right: -20%;
-    }
 }
 
+@media (width <= 700px){
+    .about-body{
+        .visual-description{
+            flex-direction: column;
+            .visual-description-text{
+                width: 100%;
+                text-align: center;
+            }
+            .two-men-img{
+                width: min(60%, 16rem);
+            }
+        }
+
+        .get-started-container{
+            flex-direction: column;
+            height: auto;
+            .get-started-description{
+                width: 100%;
+                padding: 1.5rem;
+                button{
+                    align-self: center;
+                }
+            }
+            .get-started-img{
+                width: 100%;
+                height: 12rem;
+            }
+        }
+    }
+}

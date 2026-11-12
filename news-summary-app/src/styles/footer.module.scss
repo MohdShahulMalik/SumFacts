@@ -2,10 +2,7 @@
 
 
 .app-footer{
-    position: absolute;
-    bottom: -5.5rem;
-    left: 0%;
-    right: 0%;
+    width: 100%;
 
     .footer-content{
         @include i.flex-center;
@@ -13,7 +10,7 @@
         width: 100%;
         padding-bottom: 0.5rem;
         .divider{
-            width: 90%;
+            width: min(90%, 60rem);
         }
     }
 }

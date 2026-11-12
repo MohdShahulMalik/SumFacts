@@ -2,20 +2,24 @@
 
 .home-body{
     @include i.flex-center;
-    @include i.position-center;
     flex-direction: column;
-    width: 55%;
-    height: calc(100svh - 5rem);
+    width: min(100% - 2rem, 55rem);
+    min-height: calc(100svh - 5rem);
+    margin-inline: auto;
+    padding: 1.5rem 0;
+    box-sizing: border-box;
 }
 
 .tag{
-    // @include i.flex-center;
     text-align: center;
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
+    margin-top: 0;
 }
 
 .extended-despricption {
     text-align: center;
     font-weight: normal;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
 }
 
 .app-description{
@@ -24,7 +28,8 @@
 
 .login{
     align-self: center;
-    width: 30%;
+    width: min(30%, 20rem);
+    min-width: 12rem;
     background-color: i.$color-primary;
     color: i.$color-secondary;
     padding: 0.5rem 0.75rem;
@@ -50,12 +55,12 @@
     column-gap: 2rem;
     width: 100%;
     padding-top: 2rem;
-    // height: 100%;
     .quick-description{
         @include i.flex-center;
         flex-direction: column;
         flex: 1;
-        // height: 100%;
+        min-width: 0;
+        text-align: center;
         .quick-description-img{
             width: 5.5rem;
             height: 5.5rem;
@@ -77,24 +82,17 @@ h4{
     font-weight: normal;
 }
 
-@media (width <= 1020px){
-    .home-body{
-        width: 70%;
-    }
-}
-
 @media (width <= 870px){
     .home-body{
-        width: 90%;
+        width: min(100% - 2rem, 45rem);
     }
 }
 
 @media (width <= 700px){
     .home-body{
-        position: static;
-        transform: translate(0, 0);
+        min-height: 0;
         align-content: center;
-        width: 100%;
+        width: min(100% - 2rem, 45rem);
     }
 
     .app-quick-descriptions{
@@ -104,5 +102,6 @@ h4{
 
     .login{
         width: 50%;
+        min-width: 12rem;
     }
 }
