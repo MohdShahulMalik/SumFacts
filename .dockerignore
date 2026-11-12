@@ -1,0 +1,9 @@
+# Keep the build context small and free of secrets/build artifacts.
+**/node_modules
+**/dist
+**/frontend-dist
+**/.env
+.git
+.gitignore
+surreal_data
+**/*.tmp

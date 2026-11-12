@@ -1,0 +1,22 @@
+# Single-project deployment: one app container (Express API + React UI) plus
+# any externally managed SurrealDB instance. Secrets come from
+# news-app-backend/.env via env_file, so nothing sensitive lives in this file.
+
+services:
+  app:
+    build: .
+    image: sumfacts:latest
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    environment:
+      # The container listens on 8080; the host port above maps to it.
+      - PORT=8080
+    env_file:
+      - news-app-backend/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 90s

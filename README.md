@@ -49,7 +49,6 @@ This project is a monorepo containing a React frontend and a Node.js backend. Th
 | **React Router** | Declarative routing for React applications. |
 | **Auth0** | Secure authentication and user management. |
 | **Day.js** | Lightweight date/time manipulation library. |
-| **Google Gemini API** | Powers the on-demand fact-checking feature. |
 
 ### Backend (`news-app-backend`)
 
@@ -86,45 +85,24 @@ cd SumFacts
 
 ### 2. Install Dependencies
 
-Install dependencies for both the frontend and backend from the root directory.
+Install dependencies in each package (there is no root workspace):
 
 ```bash
-pnpm install
+cd news-app-backend && pnpm install
+cd ../news-summary-app && pnpm install
 ```
 
 ### 3. Environment Variables
 
-You will need to create two `.env` files, one for the frontend and one for the backend.
+> [!NOTE]
+> Page URLs are derived from `window.location.origin` at runtime and API calls are same-origin relative paths, so the app needs **no URL-related environment variables** — nothing to adjust per environment.
 
-**Backend (`/news-app-backend/.env`):**
+You need one `.env` file per package, containing only secrets. Each package ships a `.env.example` with the exact variable names the code reads — copy it to `.env` and fill in your values:
 
-```
-# Server Configuration
-PORT=5000
-FRONTEND_URL=http://localhost:5173
+- Backend: copy `news-app-backend/.env.example` to `news-app-backend/.env`
+- Frontend: copy `news-summary-app/.env.example` to `news-summary-app/.env` (optional — unset values fall back to the hardcoded dev-tenant Auth0 credentials)
 
-# SurrealDB Credentials
-SURREAL_URL=ws://localhost:8000/rpc
-SURREAL_USER=your-surreal-user
-SURREAL_PASS=your-surreal-pass
-SURREAL_NS=your-namespace
-SURREAL_DB=your-database
-
-# API Keys
-GNEWS_API_KEY=your-gnews-api-key
-GOOGLE_API_KEY=your-google-api-key
-```
-
-**Frontend (`/news-summary-app/.env`):**
-
-```
-# Vite Port
-VITE_PORT=5173
-
-# API Endpoints
-VITE_NEWS_ENDPOINT=http://localhost:5000/news-summaries
-VITE_GEMINI_API_KEY=your-gemini-api-key
-```
+The backend variables are `PORT`, `SURREAL_URL`, `SURREAL_USER`, `SURREAL_PASS`, `SURREAL_NS`, `SURREAL_DB`, `GNEWS_API_KEY` and `GOOGLE_API_KEY` (the same key powers both news summarization and fact-checking, both of which run server-side).
 
 ### 4. Run the Application
 
@@ -142,7 +120,46 @@ pnpm --filter news-app-backend dev
 pnpm --filter news-summary-app dev
 ```
 
-The frontend will be available at `http://localhost:5173` and the backend at `http://localhost:5000`.
+The frontend will be available at `http://localhost:5173` and the backend at `http://localhost:5000`. In development, the Vite dev server proxies `/news-summaries`, `/fact-check` and `/health` requests to the backend, so no CORS configuration is needed.
+
+---
+
+## Deployment (single Docker service)
+
+The frontend and backend are deployed together as **one Docker container**: Express serves the built React app and the REST API from a single origin. No CORS or URL configuration is required — the API is reached via same-origin relative paths, and nothing is hardcoded to a specific host.
+
+### Files involved
+
+| File | Purpose |
+| :-- | :-- |
+| `Dockerfile` | Multi-stage build: compiles the Vite frontend, compiles the backend TypeScript, then builds a slim runtime image containing only production dependencies. |
+| `docker-compose.yml` | Runs the app container, maps port `8080`, passes secrets from `news-app-backend/.env` via `env_file`, and defines a `/health`-based healthcheck. |
+| `.dockerignore` | Keeps secrets, `node_modules` and build artifacts out of the image build context. |
+
+### 1. Configure secrets
+
+Copy `news-app-backend/.env.example` to `news-app-backend/.env` and fill in your SurrealDB credentials (use `wss://...` for a hosted instance) and API keys. The variable names must match `.env.example` exactly — the code reads `SURREAL_URL`, `SURREAL_USER`, `SURREAL_PASS`, `SURREAL_NS`, `SURREAL_DB`, `GNEWS_API_KEY` and `GOOGLE_API_KEY`.
+
+### 2. Build and run
+
+```bash
+docker compose up -d --build
+```
+
+The app listens on port `8080` inside the container; set `APP_PORT` (for example in a root-level `.env` or with `export APP_PORT=3000`) to publish a different host port.
+
+### 3. Check that it is healthy
+
+```bash
+curl http://localhost:8080/health
+# {"status":"ok"}
+```
+
+If SurrealDB is unreachable, the app retries for about a minute and exits non-zero; Docker's restart policy brings it back up once the database is available. View readiness state with `docker compose ps` and logs with `docker compose logs app`.
+
+### Auth0
+
+Add the deployed URL (e.g. `https://your-domain.com/summaries`, or `http://localhost:8080/summaries` when testing locally) to your Auth0 application's **Allowed Callback URLs / Logout URLs / Web Origins** so sign-in works.
 
 ---
 
