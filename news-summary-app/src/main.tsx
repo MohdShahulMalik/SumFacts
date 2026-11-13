@@ -6,8 +6,8 @@ import App from "./App";
 createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <Auth0Provider
-        domain = {import.meta.env.VITE_AUTH0_DOMAIN ?? "dev-177sgpdkd45cm6vm.au.auth0.com"}
-        clientId = {import.meta.env.VITE_AUTH0_CLIENT_ID ?? "bnQc00L1WDzfQPIFyVPKhGNpot2TFBfx"}
+        domain = { import.meta.env.VITE_AUTH0_DOMAIN ?? "dev-f7jmc8ey6m6ef1vm.au.auth0.com"}
+        clientId = { import.meta.env.VITE_AUTH0_CLIENT_ID ?? "AA6OmN36VFjacDRKN9U8u1oqBbjairsy"}
         authorizationParams = {{
           redirect_uri: `${window.location.origin}/summaries`
         }}>
