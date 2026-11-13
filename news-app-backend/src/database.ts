@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 import { NewsSummaries, NewsSummariesRecord } from "./types.js";
+import { logger } from "./logger.js";
 
 dotenv.config();
 dayjs.extend(utc);
@@ -25,10 +26,10 @@ export async function startDB(): Promise<boolean>{
             database: process.env.SURREAL_DB!
         });
 
-        console.log("Connection to surrealdb has been successfully established!");
+        logger.info("Connection to surrealdb established");
         return true;
     }catch(error){
-        console.error("Failed to connect to surrealdb: ", error instanceof Error ? error.message : error);
+        logger.error("Failed to connect to surrealdb", error);
         db.close();
         return false;
     }
@@ -47,7 +48,7 @@ export async function connectWithRetry(
             return;
         }
         if (attempt < attempts) {
-            console.log(`Retrying to connect to surrealdb in ${delayMs}ms (attempt ${attempt}/${attempts})`);
+            logger.warn("Retrying surrealdb connection", { delayMs, attempt, maxAttempts: attempts });
             await new Promise((resolve) => setTimeout(resolve, delayMs));
         }
     }
@@ -57,9 +58,9 @@ export async function connectWithRetry(
 export async function closeDB(){
     try {
         await db.close();
-        console.log("The connection with the surrealdb has been closed successfully!");
+        logger.info("Surrealdb connection closed");
     }catch (error){
-        console.error("Failed to close the database connection: ", error instanceof Error ? error.message: error);
+        logger.error("Failed to close the database connection", error);
     }
 }
 
@@ -72,7 +73,7 @@ export async function addSummaries(day: Dayjs, summaries: string[], urls: string
 
         return rec;
     }catch(error){
-        console.error("Failed to add summaries to the database: ", error instanceof Error ? error.message : error);
+        logger.error("Failed to add summaries to the database", error, { category, numNews });
     }
 
 }
@@ -86,7 +87,7 @@ export async function getSummaries(day: Dayjs, category: string, numNews: number
         if (error instanceof NotFoundError) {
             return undefined;
         }
-        console.error("Failed to fetch the record from  the database: ", error instanceof Error ? error.message : error);
+        logger.error("Failed to fetch the record from the database", error, { category, numNews });
     }
 }
 
