@@ -16,61 +16,42 @@ export default function CategorySummaries() {
   const [summaries, setSummaries] = useState<string[]>([]);
   const [urls, setUrls] = useState<string[]>([]);
   const [date, setDate] = useState(dayjs());
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     setSummaries([]);
+    setLoadError(null);
 
     const previouosDate = date.subtract(1, "day").toISOString();
     const currentDate = date.toISOString();
 
-    const previousDayNewsFetch = fetch(
-      `/news-summaries/${category}`,
-      {
+    const fetchSummaries = (day: string, numNews: number, label: string) =>
+      fetch(`/news-summaries/${category}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          day: previouosDate,
-          numNews: 10,
-        }),
-      },
-    );
-
-    const currentDayNewsFetch = fetch(
-      `/news-summaries/${category}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          day: currentDate,
-          numNews: 5,
-        }),
-      },
-    );
-
-    Promise.all([previousDayNewsFetch, currentDayNewsFetch])
-      .then(([previousDayNewsRes, currentDayNewsRes]) => {
-        // console.log("Prev Status: ", previousDayNewsFetch.status);
-        // console.log("Current Status: ", currentDayNewsFetch.status);
-        if (previousDayNewsRes.ok && currentDayNewsRes.ok) {
-          return Promise.all([
-            previousDayNewsRes.json(),
-            currentDayNewsRes.json(),
-          ]);
-        } else {
-          throw new Error("Failed to fetch the summaries");
+        body: JSON.stringify({ day, numNews }),
+      }).then(async (res) => {
+        if (!res.ok) {
+          const body = await res.text().catch(() => "(unreadable body)");
+          console.error(
+            `[summaries] ${label} request failed: status=${res.status} category=${category} day=${day} numNews=${numNews} body=${body}`,
+          );
+          throw new Error(`${label} summaries request failed with status ${res.status}`);
         }
-      })
+        return res.json();
+      });
+
+    Promise.all([
+      fetchSummaries(previouosDate, 10, "previous-day"),
+      fetchSummaries(currentDate, 5, "current-day"),
+    ])
       .then(([previousDayNews, currentDayNews]) => {
-        console.log(previousDayNews);
-        console.log(currentDayNews);
-        const previousDaySummaries = previousDayNews.summarizedArticles;
-        const previousDaySummariesUrls = previousDayNews.urls;
-        const currentDaySummaries = currentDayNews.summarizedArticles;
-        const currentDaySummariesUrls = currentDayNews.urls;
+        const previousDaySummaries = previousDayNews.summarizedArticles ?? [];
+        const previousDaySummariesUrls = previousDayNews.urls ?? [];
+        const currentDaySummaries = currentDayNews.summarizedArticles ?? [];
+        const currentDaySummariesUrls = currentDayNews.urls ?? [];
         const allSummaries = [...currentDaySummaries, ...previousDaySummaries];
         const allUrls = [
           ...currentDaySummariesUrls,
@@ -80,7 +61,13 @@ export default function CategorySummaries() {
         setUrls(allUrls);
       })
       .catch((error) => {
-        console.error(error.message);
+        console.error(
+          `[summaries] failed to load summaries for ${category}:`,
+          error instanceof Error ? error.message : error,
+        );
+        setLoadError(
+          error instanceof Error ? error.message : "Failed to load summaries",
+        );
       });
   }, [date]);
 
@@ -124,6 +111,10 @@ export default function CategorySummaries() {
             <hr className={styles["articles-divider"]} />
           </>
         ))
+      ) : loadError ? (
+        <p role="alert" className={styles["load-error"]}>
+          Couldn’t load the summaries right now. Please try again.
+        </p>
       ) : (
         <LoadingSkeleton />
       )}
