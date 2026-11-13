@@ -5,7 +5,6 @@ import ProtectedRoute from "./components/protected-route";
 import CategorySummaries from "./pages/category-summaries";
 import FactCheck from "./pages/fact-check";
 import About from "./pages/about";
-import Footer from "./components/footer";
 import { Routes, Route } from "react-router-dom";
 import "./styles/app.scss";
 import Loading from "./pages/loading";
@@ -17,7 +16,7 @@ export default function App() {
       <Header/>
 
       <Routes>
-        <Route path = "/" element = {<><Home/><Footer/></>}/>
+        <Route path = "/" element = {<Home/>} />
         <Route path = "/load" element = {<Loading/>} />
         <Route path = "/summaries" element = {<ProtectedRoute component = {Summaries} />} />
         <Route path = "/summaries/:category" element = {<ProtectedRoute component = {CategorySummaries} />} />

@@ -2,119 +2,179 @@
 
 .about-body{
     @include i.flex-center;
-    text-align: center;
-    margin: 0 auto;
     flex-direction: column;
-    position: relative;
-    width: min(100% - 2rem, 60rem);
-    padding: 0 0 3rem;
+    width: min(100% - 2rem, 55rem);
+    margin-inline: auto;
+    padding: 1.5rem 0 3rem;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.app-description{
+    padding: 0.5rem 0 1.5rem;
+}
+
+.tag{
+    text-align: center;
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
+    margin: 0;
+}
+
+.extended-description{
+    text-align: center;
+    font-weight: normal;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: #333;
+    max-width: 45rem;
+    margin: 0.75rem auto 0;
+}
+
+.globe-img{
+    width: min(30svh, 40vw, 11rem);
+    height: min(30svh, 40vw, 11rem);
+    border-radius: 50%;
+    background-image: url("../assets/globe.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+}
+
+.divider{
+    width: 100%;
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 2rem 0;
+}
+
+.section-heading{
+    text-align: center;
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+    font-weight: normal;
+    color: black;
+    margin: 0 0 0.75rem;
+}
+
+.mission-paragraph{
+    text-align: center;
+    font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+    color: #333;
+    max-width: 42rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.visual-description{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+    margin-top: 2.5rem;
+
+    .visual-description-text{
+        flex: 1;
+        min-width: 0;
+        font-size: clamp(1.5rem, 6vw, 2.5rem);
+        font-weight: normal;
+        text-align: left;
+    }
+
+    .two-men-img{
+        height: auto;
+        max-height: 22rem;
+        width: min(44%, 19rem);
+        object-fit: contain;
+    }
+}
+
+/* Shared caution note (Gemini AI can make mistakes) */
+.ai-note{
+    margin-top: 2rem;
+    max-width: 42rem;
+    text-align: center;
+    background-color: #fffbe8;
+    border: 1px solid #e3d5a1;
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.5rem;
     box-sizing: border-box;
 
-    .globe-img{
-        width: min(40svh, 80vw, 22rem);
-        height: min(40svh, 80vw, 22rem);
-        background-image: url("../assets/globe.png");
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
+    h2{
+        font-size: clamp(1.1rem, 3.5vw, 1.3rem);
+        font-weight: normal;
+        margin: 0 0 0.5rem;
+        color: #5c510f;
     }
 
     p{
-        margin-top: 0;
+        margin: 0;
+        font-size: 0.95rem;
+        color: #5c510f;
+        line-height: 1.6;
+    }
+}
+
+.get-started-container{
+    @include i.flex-center;
+    flex-direction: column;
+    margin-top: 2.5rem;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: i.$color-primary;
+    border-radius: 0.5rem;
+    color: white;
+
+    .get-started-heading{
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        margin: 0 0 0.25rem;
+        text-align: center;
     }
 
-    hr{
-        width: 100%;
+    .get-started-paragraph{
+        margin: 0 0 1.25rem;
+        text-align: center;
     }
 
-    .visual-description{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        width: 100%;
-        .two-men-img{
-            height: auto;
-            max-height: 50svh;
-            width: min(45%, 22rem);
-            object-fit: contain;
-        }
-        .visual-description-text{
-            width: 55%;
-            font-size: clamp(2rem, 8vw, 5rem);
-            text-align: left;
-        }
-    }
+    .sign-up-btn{
+        background-color: white;
+        color: i.$color-primary;
+        padding: 0.5rem 0.75rem;
+        height: 2.5rem;
+        min-width: 10rem;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        border-radius: 0.25rem;
+        transition: background-color 0.3s ease-in-out;
 
-    .get-started-container{
-        display: flex;
-        width: 100%;
-        height: 40svh;
-        min-height: 16rem;
-        .get-started-description{
-            text-align: left;
-            width: 70%;
-            height: 100%;
-            background-color: cadetblue;
-            padding: 0 1.5rem;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            h1{
-                font-size: clamp(1.5rem, 4vw, 2rem);
-            }
-            button{
-                align-self: start;
-                background-color: i.$color-primary;
-                color: white;
-                padding: 0.75rem 2rem;
-                min-height: 2.75rem;
-                border: solid black 0.1rem;
-                border-radius: 10rem;
-                font-weight: bold;
-                font-size: 1rem;
-                cursor: pointer;
-            }
-        }
-        .get-started-img{
-            width: 30%;
-            height: 100%;
-            background-image: url("../assets/man-newspaper.jpg");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
+        &:hover{
+            background-color: #f0f0f0;
         }
     }
 }
 
 @media (width <= 700px){
-    .about-body{
-        .visual-description{
-            flex-direction: column;
-            .visual-description-text{
-                width: 100%;
-                text-align: center;
-            }
-            .two-men-img{
-                width: min(60%, 16rem);
-            }
+    .app-quick-descriptions{
+        flex-direction: column;
+        align-items: center;
+
+        .quick-description{
+            width: 100%;
+        }
+    }
+
+    .visual-description{
+        flex-direction: column;
+
+        .visual-description-text{
+            text-align: center;
+            width: 100%;
         }
 
-        .get-started-container{
-            flex-direction: column;
-            height: auto;
-            .get-started-description{
-                width: 100%;
-                padding: 1.5rem;
-                button{
-                    align-self: center;
-                }
-            }
-            .get-started-img{
-                width: 100%;
-                height: 12rem;
-            }
+        .two-men-img{
+            width: min(60%, 15rem);
         }
     }
 }
