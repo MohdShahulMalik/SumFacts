@@ -13,10 +13,9 @@ export default function Home() {
       <div className={styles["app-description"]}>
         <h1 className={styles["tag"]}>Stay Informed, Save Time</h1>
         <h3 className={styles["extended-despricption"]}>
-          With SumFacts, get concise summaries of the latest top news articles
-          from trusted sources. Stay up-to-date with the most important
-          information while saving time. Ensure credibility with our advanced
-          fact-checking features.
+          SumFacts gives you short summaries of the top news stories from
+          trusted sources, plus fact-checks on the claims you hear online.
+          Read less. Miss nothing.
         </h3>
       </div>
 
@@ -34,7 +33,7 @@ export default function Home() {
             alt="summarize"
           />
           <h3>Summaries</h3>
-          <h4>Get brief summaries of lengthy news articles</h4>
+          <h4>Short summaries of long news articles</h4>
         </div>
 
         <div
@@ -46,7 +45,7 @@ export default function Home() {
             alt="fact-check"
           />
           <h3>Fact Check</h3>
-          <h4>Find out the actual weight of a claim or a news</h4>
+          <h4>Check whether a claim is actually true</h4>
         </div>
 
         <div
@@ -58,7 +57,7 @@ export default function Home() {
             alt="save-time"
           />
           <h3>Save Time</h3>
-          <h4>Stay informed quickly, without the long reads</h4>
+          <h4>Stay informed in minutes, not hours</h4>
         </div>
       </div>
     </main>
