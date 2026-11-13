@@ -1,5 +1,6 @@
 import axios from "axios";
 import { httpsAgent } from "../config/app-config.js";
+import { describeHttpError } from "../http-error.js";
 
 export type FactCheckResult = {
   assessment: string;
@@ -13,17 +14,23 @@ const GEMINI_FACT_CHECK_PROMPT =
   "Give the assessment of the truthfulness of the following claim (highlight the assessment):\n";
 
 export async function factCheckClaim(claim: string): Promise<FactCheckResult> {
-  const response = await axios.post(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_FACT_CHECK_MODEL}:generateContent?key=${process.env.GOOGLE_API_KEY}`,
-    {
-      contents: [{ parts: [{ text: GEMINI_FACT_CHECK_PROMPT + claim }] }],
-      tools: [{ googleSearch: {} }],
-    },
-    {
-      headers: { "Content-Type": "application/json" },
-      httpsAgent,
-    },
-  );
+  let response;
+  try {
+    response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_FACT_CHECK_MODEL}:generateContent?key=${process.env.GOOGLE_API_KEY}`,
+      {
+        contents: [{ parts: [{ text: GEMINI_FACT_CHECK_PROMPT + claim }] }],
+        tools: [{ googleSearch: {} }],
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+        httpsAgent,
+        timeout: 60_000,
+      },
+    );
+  } catch (error) {
+    throw new Error(`Gemini fact-check request failed: ${describeHttpError(error)}`);
+  }
 
   const candidate = response.data?.candidates?.[0];
   const assessment: string | undefined = candidate?.content?.parts?.[0]?.text;
