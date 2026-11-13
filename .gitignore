@@ -10,3 +10,5 @@ news-app-backend/surreal_data
 # temp / editor leftovers
 **/*.tmp
 **/*~
+.helix
+fixes
